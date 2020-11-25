@@ -23,13 +23,14 @@ namespace Microwave.Test.Integration
         [SetUp]
         public void Setup()
         {
-            _powerButton = new Button();
-            _timeButton = new Button();
-            _startCancelButton = new Button();
             _fakeDoor = Substitute.For<IDoor>();
             _fakeLight = Substitute.For<ILight>();
             _fakeCookController = Substitute.For<ICookController>();
             _fakeDisplay = Substitute.For<IDisplay>();
+
+            _powerButton = new Button();
+            _timeButton = new Button();
+            _startCancelButton = new Button();
 
             _uut = new UserInterface(
                 _powerButton, 
@@ -91,9 +92,43 @@ namespace Microwave.Test.Integration
         {
             //Power button pressed, changes state to SETPOWER
             _powerButton.Press();
-            //Time button pressed, calls OnTimePressed()
+
             _startCancelButton.Press();
-            _fakeDisplay.Received(1).ShowTime(1, 0);
+
+            _fakeLight.Received(1).TurnOff();
+            _fakeDisplay.Received(1).Clear();
+        }
+
+        [Test]
+        public void StartCancelButton_StateSETTIME_IsCorrect()
+        {
+            //Power button pressed, changes state to SETPOWER
+            _powerButton.Press();
+            //Time button pressed, changes state to SETTIME
+            _timeButton.Press();
+
+            _startCancelButton.Press();
+
+            _fakeLight.Received(1).TurnOn();
+            //StartCooking should be called with intial values
+            _fakeCookController.Received(1).StartCooking(50, 1*60);
+        }
+
+        [Test]
+        public void StartCancelButton_StateCOOKING_IsCorrect()
+        {
+            //Power button pressed, changes state to SETPOWER
+            _powerButton.Press();
+            //Time button pressed, changes state to SETTIME
+            _timeButton.Press();
+            //Start/Cancel button pressed, changes state to COOKING
+            _startCancelButton.Press();
+
+            _startCancelButton.Press();
+
+            _fakeCookController.Received(1).Stop();
+            _fakeLight.Received(1).TurnOff();
+            _fakeDisplay.Received(1).Clear();
         }
         #endregion
     }

@@ -1,0 +1,15 @@
+CookControler og UserInterface er afhængige af hinanden, men kan ikke kobles sammen når der bruges interfaces, 
+da hverken IUserInterface ller ICookController har en variable af den anden defineret i sig. I Program.cs laves
+der en konkret instans af CookController i stedet for ICookController, som har implementeret en public IUserInterface i sig,
+hvorfor UI godt kan opdateres efterfølgende der. Dette kan man dog ikke når der anvendes disse interfaces. Derfor tilføjes der
+en public IUserInterface attribut til ICookController klassen, således denne double association også kan færdiggøres når der
+gøres brug af de respektive interfaces. 
+
+- Tilføjede "public IUserInterface UI { set; }" i ICookController interfacet.
+- Ingen grund til at ændre på IUserInterface UI i CookController klassen, da Set-metoden i forvejen var Public. Get-metoden er 
+godt nok privat her, men dette er irrelevant, da vi ikke gør brug af den. Så længe Get-metoden ikke sættes i ICookController
+interfacet, kan den være hvad man vil i CookController.
+
+Denne fejl blev opdaget ved step 4 i vores integrations plan, da vi skulle teste CookControllers implementation af
+"OnTimerExpired()". Funktionen kalder IUserInterfaces "CookingIsDone()" funktion, hvilket gav fejlen 
+"System.NullReferenceException : Object reference not set to an instance of an object" i vores test.
