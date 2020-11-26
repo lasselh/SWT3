@@ -48,7 +48,7 @@ namespace Microwave.Test.Integration
                 _light,
                 _cookController);
 
-            //Finishes the double association
+            //Finishes the double association with interfaces
             _cookController.UI = _uut;
         }
 
