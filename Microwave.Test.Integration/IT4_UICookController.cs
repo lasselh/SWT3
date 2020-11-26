@@ -102,5 +102,37 @@ namespace Microwave.Test.Integration
             _fakeOutput.DidNotReceive().OutputLine("Light is turned off");
             _fakeDisplay.Received(1).Clear();
         }
+
+        [TestCase(30)]
+        [TestCase(90)]
+        [TestCase(120)]
+        public void CookController_TimerTick_IsCooking_IsCorrect(int timeRemaining)
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+
+            _fakeTimer.TimeRemaining.Returns(timeRemaining);
+
+            _fakeTimer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
+
+            _fakeDisplay.Received(1).ShowTime(timeRemaining / 60, timeRemaining % 60);
+        }
+
+        [Test]
+        public void CookController_TimerTick_IsNotCooking_IsCorrect()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            _fakeTimer.TimeRemaining.Returns(30);
+
+            _fakeTimer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
+
+            _fakeDisplay.DidNotReceive().ShowTime(_fakeTimer.TimeRemaining / 60, 
+                                              _fakeTimer.TimeRemaining % 60);
+        }
     }
 }
