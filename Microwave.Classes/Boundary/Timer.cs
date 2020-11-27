@@ -43,7 +43,10 @@ namespace Microwave.Classes.Boundary
         {
             // One tick has passed
             // Do what I should
-            TimeRemaining -= 1000;
+
+            // Time was initially given as seconds from UserInterface to CookController to this class.
+            // However this method handled it as milliseconds. Changed to handle it as seconds instead.
+            TimeRemaining -= 1;
             TimerTick?.Invoke(this, EventArgs.Empty);
 
             if (TimeRemaining <= 0)

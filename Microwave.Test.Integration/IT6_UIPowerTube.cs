@@ -48,33 +48,23 @@ namespace Microwave.Test.Integration
                 _light,
                 _cookController);
 
-            //Finishes the double association with interfaces
+            // Finishes the double association with interfaces
             _cookController.UI = _uut;
         }
 
-        [Test]
-        public void PowerTube_TurnOn_PowerIs50_IsCorrect()
-        {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-
-            _fakeOutput.Received(1).OutputLine($"PowerTube works with {50}");
-        }
-
-        [TestCase(3)]  // 150 Power
+        [TestCase(1)]  // 50 Power
         [TestCase(7)]  // 350 Power
-        [TestCase(14)] // 700 Power
-        public void PowerTube_TurnOn_PowerIsOutOfRange_IsCorrect(int amountOfPresses)
+        [TestCase(14)]  // 700 Power
+        public void PowerTube_TurnOn_PowerIs50_IsCorrect(int amountOfPresses)
         {
-            for(int i = 0; i < amountOfPresses; i++)
+            for (int i = 0; i < amountOfPresses; i++)
             {
                 _powerButton.Press();
             }
-
             _timeButton.Press();
+            _startCancelButton.Press();
 
-            Assert.That(() => _startCancelButton.Press(), Throws.TypeOf<ArgumentOutOfRangeException>());
+            _fakeOutput.Received(1).OutputLine($"PowerTube works with {amountOfPresses*50} W");
         }
 
         [Test]
