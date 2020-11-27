@@ -109,8 +109,43 @@ namespace Microwave.Test.Integration
             _timeButton.Press();
             _startCancelButton.Press();
 
-            // Asserts that the StringWriter contains the text
+            // Asserts that the StringWriter contains the correct PowerTube power
             Assert.That(str.ToString().Contains($"PowerTube works with {amountOfPresses*50} W"));
+        }
+
+        [Test]
+        public void Output_StartCooking_PowerTubeTurnOff_IsCorrect()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            // Asserts that the StringWriter contains the text
+            Assert.That(str.ToString().Contains($"PowerTube turned off"));
+        }
+
+        [Test]
+        public void Output_Light_TurnOn_IsCorrect()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+
+            // Asserts that the StringWriter contains the text
+            Assert.That(str.ToString().Contains("Light is turned on"));
+        }
+
+        [Test]
+        public void Output_Light_TurnOff_IsCorrect()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            // Asserts that the StringWriter contains the text
+            Assert.That(str.ToString().Contains("Light is turned off"));
         }
     }
 }
